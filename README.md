@@ -1,2 +1,2 @@
-# FariBnb
+# FairBnb
 FairBnb Listing Certificates
