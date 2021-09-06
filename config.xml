@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>itcfairbnblocalambassador</name>
+	<displayName><![CDATA[FairBNB Local Ambassador Dashboard]]></displayName>
+	<version><![CDATA[1.0.0]]></version>
+	<description><![CDATA[This module makes you create keypair]]></description>
+	<author><![CDATA[Studio ITC]]></author>
+	<tab><![CDATA[administration]]></tab>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+</module>

@@ -1,0 +1,75 @@
+<div class="panel col-lg-12">
+    <div class="card">
+        <h3 class="card-header">
+            <div class="row">
+                <div class="col-sm-6">
+                    <i class="material-icons">vpn_key</i>
+                    {{ 'Local Ambassador Keypair Generation'|trans({}, 'Admin.Advparameters.Feature') }}
+                </div>
+                <div class="col-sm-6">
+                    <strong class="" id="itc_message"></strong>
+                </div>
+            </div>
+
+        </h3>
+
+        <div class="card-block">
+            <div class="card-text">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-12 itc_margin_top">
+                            <strong>What are the last five digits of your driver's license number?</strong>
+                        </div>
+                        <div class="col-sm-12">
+                            <input class="form-control itc_question" type="text" id="itc_question1" value="">
+                        </div>
+                        <div class="col-sm-12 itc_margin_top">
+                            <strong>In what town or city did your parents meet?</strong>
+                        </div>
+                        <div class="col-sm-12">
+                            <input class="form-control itc_question" type="text" id="itc_question2" value="">
+                        </div>
+                        <div class="col-sm-12 itc_margin_top">
+                            <strong>In what city or town was your first job?</strong>
+                        </div>
+                        <div class="col-sm-12">
+                            <input class="form-control itc_question" type="text" id="itc_question3" value="">
+                        </div>
+                        <div class="col-sm-12 itc_margin_top">
+                            <strong>What is your favourite movie?</strong>
+                        </div>
+                        <div class="col-sm-12">
+                            <input class="form-control itc_question" type="text" id="itc_question4" value="">
+                        </div>
+                        <div class="col-sm-12 itc_margin_top">
+                            <strong>What is the name of your favorite animal?</strong>
+                        </div>
+                        <div class="col-sm-12">
+                            <input class="form-control itc_question" type="text" id="itc_question5" value="">
+                        </div>
+                    </div>
+                    <div class="row itc_margin_top">
+                        <div class="col-sm-12">
+                            <strong>Email</strong>
+                        </div>
+                        <div class="col-sm-12">
+                            <input class="form-control itc_question" type="text" id="email" value="">
+                        </div>
+                        <div class="col-sm-12">
+                            <button id="gen_key_confirmation"
+                                    onclick="generateKey('{{ path('itcfairbnblocalambassador_check') }}','{{ id_employee }}')"
+                                    type="button" class="btn btn-primary float-right itc_margin_top_2">
+                                <i class="material-icons">refresh</i>Generate Key
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+

@@ -1,0 +1,318 @@
+{% extends '@PrestaShop/Admin/layout.html.twig' %}
+
+{% block content %}
+    {% block form_keypair_gen %}
+        <div class="panel col-lg-12">
+            <div class="card">
+                <h3 class="card-header">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <i class="material-icons">vpn_key</i>
+                            {{ 'Local Ambassador Keypair Generation'|trans({}, 'Admin.Advparameters.Feature') }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong class="" id="itc_message_signature"></strong>
+                        </div>
+                    </div>
+                </h3>
+
+                <div class="card-block">
+                    <div class="card-text">
+                        <div class="form-group">
+                            <div class="row itc_margin_top text-center align-middle">
+                                <div class="col-sm-5 itc_margin_block_auto">
+                                    <button id="gen_key" type="button" class="btn btn-primary"><i
+                                                class="material-icons">refresh</i>Generate Key
+                                    </button>
+                                </div>
+                                <div class="offset-sm-2 col-sm-5">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <strong>Public Key</strong>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input class="form-control" type="text" id="public_key" value="" disabled>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <strong>Private Key</strong>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input class="form-control" type="text" id="private_key" value="" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row itc_margin_top_2 text-center align-middle">
+                                <div class="col-sm-5">
+                                    <strong>Contract of Product to Sign</strong>
+                                </div>
+                                <div class="offset-sm-2 col-sm-5">
+                                    <strong>Signed Contract</strong>
+                                </div>
+                            </div>
+                            <div class="row itc_margin_top_2 text-center align-middle">
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="contract" {% if not canSign %}disabled{% endif %}>
+                                        {% for product in products %}
+                                            <option value="{{ product.id_product }}">{{ product.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button id="sign_contract"
+                                            onclick="signContract('{{ path('itcfairbnblocalambassador_sign') }}','{{ id_employee }}')"
+                                            type="button" class="btn btn-primary"
+                                            {% if not canSign %}disabled{% endif %}><i
+                                                class="material-icons">edit</i>Sign Contract
+                                    </button>
+                                </div>
+                                <div class="col-sm-5">
+                                    <textarea id="signed_contract" class="form-control itc_text_area"
+                                              {% if not canSign %}disabled{% endif %}></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        var first_fancybox_page = '{{ first_fancybox_page }}'
+        var products = '{{ products|json_encode() }}'
+    </script>
+
+
+    <script type="module">
+        if (localStorage.getItem("private_key") != null) {
+            $("#private_key").val(localStorage.getItem("private_key"));
+            $("#public_key").val(localStorage.getItem("public_key"));
+        }
+
+        import {zencode_exec} from "https://jspm.dev/zenroom";
+
+        const conf = "memmanager=lw";
+
+        window.generateKey = (url, id) => {
+            var messageStrong = $("#itc_message");
+            var jsonObj = [];
+            var answers = "";
+            var count = 0;
+            $(".itc_question").each(function (index, element) {
+                if($(this).val()!=""){
+                    count++;
+                }
+                var value = element.value;
+                var id = element.id
+                var item = {}
+                answers += "\"" + value + "\",";
+                item ["id"] = id;
+                item ["value"] = value;
+                jsonObj.push(item);
+            })
+
+            answers+="\"" + $("#email").val() + "\"";
+
+            if(count > 3 && $("#email").val()!=""){
+            const keys = "";
+            const data = JSON.stringify({answers});
+
+            const contract = `Given that I have a 'string' named 'answers'
+                                When I create the hash of 'answers' using 'sha256'
+                                When I rename the 'hash' to 'myHashedAnswers'
+                                Then print 'myHashedAnswers'`;
+            zencode_exec(contract, {data, keys, conf}).then(({result}) => {
+                $.ajax({
+                    type    : 'GET',
+                    url     : url,
+                    headers : {"cache-control": "no-cache"},
+                    dataType: "json",
+                    data    : {
+                        'id'     : id,
+                        'answers': JSON.parse(result)
+
+                    },
+                    success : function (dataAjax) {
+                        if (dataAjax[0] === 1) {
+                            var mySeed = dataAjax[2];
+                            const keys = "";
+                            const data = JSON.stringify({mySeed});
+                            const contract = `Scenario 'ecdh': Create the keypair
+                                                Given that I am known as '` + id + `'
+                                                Given I have a 'string' named 'mySeed'
+                                                When I create the hash of 'mySeed'
+                                                When I create the keypair with secret key 'hash'
+                                                Then print my 'keypair'
+                                `;
+                            zencode_exec(contract, {data, keys, conf}).then(({result}) => {
+                                var parsed_result = JSON.parse(result);
+                                $("#contract").removeAttr("disabled");
+                                $("#sign_contract").removeAttr("disabled");
+                                $("#signed_contract").removeAttr("disabled");
+
+                                $.ajax({
+                                    type    : 'GET',
+                                    url     : dataAjax[1],
+                                    headers : {"cache-control": "no-cache"},
+                                    dataType: "json",
+                                    data    : {
+                                        'public_key': parsed_result[id]['keypair']['public_key'],
+                                        'id'        : id,
+                                    },
+                                    success : function (dataAjax2) {
+                                        if (dataAjax2 === 1) {
+                                            localStorage.setItem("id_employee", id);
+                                            localStorage.setItem("public_key", parsed_result[id]['keypair']['public_key']);
+                                            localStorage.setItem("private_key", parsed_result[id]['keypair']['private_key']);
+                                            $("#public_key").val(localStorage.getItem("public_key"));
+                                            $("#private_key").val(localStorage.getItem("private_key"));
+
+                                            removeClass(messageStrong);
+                                            messageStrong.html("Your key is created!");
+                                            messageStrong.addClass("itc_message_confirm");
+                                        } else {
+                                            removeClass(messageStrong);
+                                            messageStrong.html("Something went wrong with key creation");
+                                            messageStrong.addClass("itc_message_error");
+                                        }
+                                    },
+                                    error   : function (dataAjax2) {
+                                        removeClass(messageStrong);
+                                        messageStrong.html("Something went wrong with key creation (catch)");
+                                        messageStrong.addClass("itc_message_error");
+                                    }
+                                });
+                            })
+
+
+                        } else {
+                            removeClass(messageStrong);
+                            messageStrong.html("Your answers are wrong");
+                            messageStrong.addClass("itc_message_error");
+                        }
+                    },
+                    error   : function (dataAjax) {
+                        removeClass(messageStrong);
+                        messageStrong.html("Something went wrong on answers control");
+                        messageStrong.addClass("itc_message_error");
+                    }
+                });
+
+            });
+            }else{
+                var messageQuestions=$("#itc_message");
+                removeClass(messageQuestions);
+                messageQuestions.html("You have to complete the Email input and at least 3 questions");
+                messageStrong.addClass("itc_message_error");
+            }
+        }
+
+
+        window.signContract = (url, id) => {
+
+
+            $.ajax({
+                type    : 'GET',
+                url     : url,
+                headers : {"cache-control": "no-cache"},
+                dataType: "json",
+                data    : {
+                    'action'    : 'pre-contract',
+                    'product_id': $("#contract").val()
+
+                },
+                success : function (dataAjaxPreContract) {
+                    var messageStrong = $("#itc_message_signature");
+                    if (dataAjaxPreContract[0] == 1) {
+                        const keys = `{
+                                    "` + id + `": {
+                                        "keypair": {
+                                            "private_key": "` + localStorage.getItem("private_key") + `",
+                                                "public_key": "` + localStorage.getItem("public_key") + `"
+                                                    }
+                                                }
+                                            }`;
+                        const data = `{
+                                                "productInfo": {
+                                                    "product_id":"` + $("#contract").val() + `",
+                                                    "features": ` + JSON.stringify(dataAjaxPreContract[1]) + `
+                                                }
+                                            }`;
+
+
+                        const contract = `Scenario 'ecdh': create the signature of an object
+                                Given I am '` + id + `'
+                                Given I have my 'keypair'
+                                Given I have a 'string dictionary' named 'productInfo'
+                                When I create the signature of 'productInfo'
+                                When I rename the 'signature' to 'productInfo.signature'
+                                Then print the 'productInfo'
+                                Then print the 'productInfo.signature'
+                                `;
+                        console.log(keys);
+                        console.log(data);
+                        console.log(contract);
+                        zencode_exec(contract, {data, keys, conf}).then(({result}) => {
+                            var parsed_result = JSON.parse(result);
+                            console.log(result);
+                            $("#signed_contract").val(JSON.stringify(JSON.parse(result), null, 2));
+                            $.ajax({
+                                type    : 'GET',
+                                url     : url,
+                                headers : {"cache-control": "no-cache"},
+                                dataType: "json",
+                                data    : {
+                                    'action'    : "post_contract",
+                                    'id'        : id,
+                                    'obj'       : JSON.parse(data),
+                                    'signed_obj': parsed_result
+
+                                },
+                                success : function (data) {
+                                    if (data == 1) {
+                                        removeClass(messageStrong);
+                                        messageStrong.html("You signed the contract");
+                                        messageStrong.addClass("itc_message_confirm");
+                                    } else if (data == 2) {
+                                        removeClass(messageStrong);
+                                        messageStrong.html("The contract was already signed");
+                                        messageStrong.addClass("itc_message_error");
+                                    } else {
+                                        removeClass(messageStrong);
+                                        messageStrong.html("Something went wrong with the signature (catch)");
+                                        messageStrong.addClass("itc_message_error");
+                                    }
+                                },
+                                error   : function (data) {
+
+                                }
+                            });
+
+                        });
+
+                    } else {
+                        console.log("errore");
+                    }
+                },
+                error   : function (data) {
+
+                }
+            });
+        }
+
+    </script>
+
+{% endblock %}
+
+
+
+

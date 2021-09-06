@@ -1,0 +1,23 @@
+itcfairbnblocalambassador_index:
+  path: itcfairbnblocalambassador/index
+  methods: [GET]
+  defaults:
+    _controller: 'StudioItc\ItcFairBNBLocalAmbassador\Controller\Admin\ItcLocalAmbassador::index'
+
+itcfairbnblocalambassador_generate:
+  path: itcfairbnblocalambassador/generate
+  methods: [GET]
+  defaults:
+    _controller: 'StudioItc\ItcFairBNBLocalAmbassador\Controller\Admin\ItcLocalAmbassador::generateKey'
+
+itcfairbnblocalambassador_sign:
+  path: itcfairbnblocalambassador/sign
+  methods: [GET]
+  defaults:
+    _controller: 'StudioItc\ItcFairBNBLocalAmbassador\Controller\Admin\ItcLocalAmbassador::signContract'
+
+itcfairbnblocalambassador_check:
+  path: itcfairbnblocalambassador/check
+  methods: [GET]
+  defaults:
+    _controller: 'StudioItc\ItcFairBNBLocalAmbassador\Controller\Admin\ItcLocalAmbassador::checkAnswers'
