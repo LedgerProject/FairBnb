@@ -8,7 +8,7 @@
 <!-- GETTING STARTED -->
 ## Table of contents
 
-* [Fairbnb.coopCertificates](#fairbnbcoop-certificates)
+* [Fairbnb.coop Certificates](#fairbnbcoop-certificates)
 * [Build with](#built-with)
 * [Software Used](#software-used)
 * [Directory structure](#directory-structure)
