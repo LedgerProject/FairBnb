@@ -8,14 +8,11 @@
 <!-- GETTING STARTED -->
 ## Table of contents
 
-* [Fair BnB](#fairbnb)
+* [Fair BMB](#fairbnb)
 * [Build with](#built-with)
 * [Software Used](#software-used)
-* [Side technologies](#side-technologies)
 * [Directory structure](#directory-structure)
-* [Starting a development environment](#starting-a-development-environment)
-* [Available scripts](#available-scripts)
-* [How the backend works](#how-the-backend-works)
+* [Using the module](#using-the-module)
 
 ## Fair BNB
 
