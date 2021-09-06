@@ -1,25 +1,25 @@
 <!-- PROJECT LOGO -->
 <br />
 <p>
-  <h3>FairBnb Local Ambassador Certificate</h3>
+  <h3>Fairbnb.coop Local Ambassador Certificate</h3>
   <img src="img/logo.png" alt="logo"/>
 </p>
 
 <!-- GETTING STARTED -->
 ## Table of contents
 
-* [FairBNB Certificates](#fairbnb-certificates)
+* [Fairbnb.coopCertificates](#fairbnbcoop-certificates)
 * [Build with](#built-with)
 * [Software Used](#software-used)
 * [Directory structure](#directory-structure)
 * [Using the module](#using-the-module)
 
-## FairBNB Certificates
+## FairBNB.COOP Certificates
 Fairbnb.coop is a platform of tourist services created with the ambition to generate, in travel destinations around the world, communities of reference identity which are bound to the principles of sustainability.
 Platform tourism, thanks to the cooperative management of Fairbnb.coop, becomes a tool for economic change and the promotion of innovative policies also by local administrations in an open and constant dialogue/debate between all participants in the community.
 
-With this module we are adding a new feature that let FairBNB be able to certificate listing before they are published.
-The FairBNB certificate would mainly prove for a given time the compliance with local regulation, additional policies described by Local Node, and then would contain the info about % of money distribution to the different stakeholders.
+With this module we are adding a new feature that let Fairbnb.coop be able to certificate listing before they are published.
+The Fairbnb.coop certificate would mainly prove for a given time the compliance with local regulation, additional policies described by Local Node, and then would contain the info about % of money distribution to the different stakeholders.
 Certificating for us means both making every host to signs a contract with us to ensure to be compliant with the defined criteria, and then providing a certificate to be shown by the host to any third party that may ask for it.
 
 ## Built with
